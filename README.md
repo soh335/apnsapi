@@ -1,3 +1,5 @@
+[![wercker status](https://app.wercker.com/status/c1941900b79b7ec8d1a01c7f023ce11b/s/master "wercker status")](https://app.wercker.com/project/bykey/c1941900b79b7ec8d1a01c7f023ce11b)
+
 # apnsapi
 
 **require go1.6**
