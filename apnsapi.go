@@ -62,8 +62,7 @@ func (c *Client) Do(token string, header *Header, payload []byte) (*Response, er
 		StatusCode: res.StatusCode,
 	}
 
-	if res.StatusCode == http.StatusOK {
-	} else {
+	if res.StatusCode != http.StatusOK {
 		var er ErrorResponse
 		if err := json.NewDecoder(res.Body).Decode(&er); err != nil {
 			return r, err
