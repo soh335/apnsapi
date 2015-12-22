@@ -1,0 +1,27 @@
+package apnsapi
+
+const (
+	ErrPayloadEmpty              = "PayloadEmpty"
+	ErrPayloadTooLarge           = "PayloadTooLarge"
+	ErrBadTopic                  = "BadTopic"
+	ErrTopicDisallowed           = "TopicDisallowed"
+	ErrBadMessageId              = "BadMessageId"
+	ErrBadExpirationDate         = "BadExpirationDate"
+	ErrBadPriority               = "BadPriority"
+	ErrMissingDeviceToken        = "MissingDeviceToken"
+	ErrBadDeviceToken            = "BadDeviceToken"
+	ErrDeviceTokenNotForTopic    = "DeviceTokenNotForTopic"
+	ErrUnregistered              = "Unregistered"
+	ErrDuplicateHeaders          = "DuplicateHeaders"
+	ErrBadCertificateEnvironment = "BadCertificateEnvironment"
+	ErrBadCertificate            = "BadCertificate"
+	ErrForbidden                 = "Forbidden"
+	ErrBadPath                   = "BadPath"
+	ErrMethodNotAllowed          = "MethodNotAllowed"
+	ErrTooManyRequests           = "TooManyRequests"
+	ErrIdleTimeout               = "IdleTimeout"
+	ErrShutdown                  = "Shutdown"
+	ErrInternalServerError       = "InternalServerError"
+	ErrServiceUnavailable        = "ServiceUnavailable"
+	ErrMissingTopic              = "MissingTopic"
+)
