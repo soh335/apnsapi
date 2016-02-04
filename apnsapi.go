@@ -19,7 +19,7 @@ type Response struct {
 
 type ErrorResponse struct {
 	Reason    string `json:"reason"`
-	Timestamp string `json:"timestamp"` //TODO is string ?
+	Timestamp int    `json:"timestamp"`
 }
 
 func (e *ErrorResponse) Error() string {
