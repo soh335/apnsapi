@@ -4,7 +4,7 @@
 
 **require go1.6**
 
-Simple apns api (http/2) client fo golang.
+Simple apns api (http/2) client for golang.
 
 ## USAGE
 
