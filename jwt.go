@@ -5,9 +5,11 @@ import (
 	"crypto"
 	"crypto/ecdsa"
 	"crypto/rand"
+	"encoding/asn1"
 	"encoding/base64"
 	"encoding/json"
 	"io"
+	"math/big"
 	"time"
 )
 
@@ -19,6 +21,10 @@ type jwtHeader struct {
 type jwtClaim struct {
 	Iss string `json:"iss"`
 	Iat int64  `json:"iat"`
+}
+
+type ecdsaSignature struct {
+	R, S *big.Int
 }
 
 func CreateToken(key *ecdsa.PrivateKey, kid string, teamID string) (string, error) {
@@ -52,7 +58,13 @@ func CreateToken(key *ecdsa.PrivateKey, kid string, teamID string) (string, erro
 	h := crypto.SHA256.New()
 	h.Write(b.Bytes())
 	msg := h.Sum(nil)
-	sig, err := key.Sign(rand.Reader, msg, crypto.SHA256)
+
+	r, s, err := ecdsa.Sign(rand.Reader, key, msg)
+	if err != nil {
+		return "", err
+	}
+
+	sig, err := asn1.Marshal(ecdsaSignature{r, s})
 	if err != nil {
 		return "", err
 	}
