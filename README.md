@@ -2,8 +2,6 @@
 
 # apnsapi
 
-**require go1.6**
-
 Simple apns api (http/2) client for golang.
 
 ## USAGE
@@ -22,14 +20,23 @@ if _, err = client.Do(token, header, []byte{payload}); err != nil {
 
 ```_example/main.go``` is sample implantation and used like this.
 
+### APNs Provider Certificates
+
 ```
 $ go run _example/main.go --p12 /path/to/file.p12 --topic $topic --token $token
+```
+
+### Provider Authentication Tokens
+
+```
+$ go run _example/main.go --key /path/to/file.p8 --kid $keyIdentifier --teamId $teamID --topic $topic --token $token
 ```
 
 ## SEE ALSO
 
 * https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/Introduction.html
-* https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/APNsProviderAPI.html#//apple_ref/doc/uid/TP40008194-CH101-SW1
+* https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/APNsProviderAPI.html
+* https://developer.apple.com/videos/play/wwdc2016/724/
 
 ## LICENSE
 

@@ -2,8 +2,11 @@ package main
 
 import (
 	"bytes"
+	"crypto/ecdsa"
 	"crypto/tls"
+	"crypto/x509"
 	"encoding/json"
+	"encoding/pem"
 	"flag"
 	"io/ioutil"
 	"log"
@@ -11,6 +14,7 @@ import (
 
 	"github.com/soh335/apnsapi"
 	"golang.org/x/crypto/pkcs12"
+	"golang.org/x/net/http2"
 )
 
 var (
@@ -22,30 +26,48 @@ var (
 	msg         = flag.String("msg", "hi", "msg")
 	token       = flag.String("token", "", "token")
 	topic       = flag.String("topic", "", "topic")
+	kid         = flag.String("kid", "", "key identifier")
+	teamId      = flag.String("teamId", "", "team id")
 )
 
 func main() {
 	flag.Parse()
-	if err := _main(); err != nil {
+	var client *http.Client
+	var header *apnsapi.Header
+	if *kid != "" && *teamId != "" {
+		jwtToken, err := createJwtToken()
+		if err != nil {
+			log.Fatal(err)
+		}
+		client = http.DefaultClient
+		header = &apnsapi.Header{ApnsTopic: *topic, Authorization: "bearer " + jwtToken}
+	} else {
+		cert, err := loadCertificate()
+		if err != nil {
+			log.Fatal(err)
+		}
+		config := &tls.Config{
+			Certificates: []tls.Certificate{cert},
+		}
+		tr := &http.Transport{
+			TLSClientConfig: config,
+		}
+		if err := http2.ConfigureTransport(tr); err != nil {
+			log.Fatal(err)
+		}
+
+		client = &http.Client{
+			Transport: tr,
+		}
+
+		header = &apnsapi.Header{ApnsTopic: *topic}
+	}
+	if err := _main(client, header); err != nil {
 		log.Fatal(err)
 	}
 }
 
-func _main() error {
-	cert, err := loadCertificate()
-	if err != nil {
-		return err
-	}
-	config := &tls.Config{
-		Certificates: []tls.Certificate{cert},
-	}
-	tr := &http.Transport{
-		TLSClientConfig: config,
-	}
-	c := &http.Client{
-		Transport: tr,
-	}
-
+func _main(c *http.Client, header *apnsapi.Header) error {
 	var host string
 	if *production {
 		host = apnsapi.ProductionServer
@@ -67,9 +89,7 @@ func _main() error {
 		return err
 	}
 
-	header := &apnsapi.Header{ApnsTopic: *topic}
-
-	_, err = client.Do(*token, header, b.Bytes())
+	_, err := client.Do(*token, header, b.Bytes())
 	if err != nil {
 		switch err.(type) {
 		case *apnsapi.ErrorResponse:
@@ -99,4 +119,17 @@ func loadCertificate() (tls.Certificate, error) {
 	} else {
 		return tls.LoadX509KeyPair(*cerFile, *keyFile)
 	}
+}
+
+func createJwtToken() (string, error) {
+	data, err := ioutil.ReadFile(*keyFile)
+	if err != nil {
+		return "", err
+	}
+	block, _ := pem.Decode(data)
+	key, err := x509.ParsePKCS8PrivateKey(block.Bytes)
+	if err != nil {
+		return "", err
+	}
+	return apnsapi.CreateToken(key.(*ecdsa.PrivateKey), *kid, *teamId)
 }
