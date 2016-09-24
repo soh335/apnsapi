@@ -10,6 +10,7 @@ type Header struct {
 	ApnsExpiration string
 	ApnsPriority   string
 	ApnsTopic      string
+	Authorization  string
 }
 
 type Response struct {

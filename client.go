@@ -67,6 +67,9 @@ func (c *Client) NewRquest(token string, header *Header, payload io.Reader) (*ht
 		if header.ApnsTopic != "" {
 			req.Header.Set("apns-topic", header.ApnsTopic)
 		}
+		if header.Authorization != "" {
+			req.Header.Set("authorization", header.Authorization)
+		}
 	}
 
 	return req, err
