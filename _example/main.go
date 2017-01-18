@@ -39,7 +39,16 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		client = http.DefaultClient
+		tr := &http.Transport{}
+
+		if err := http2.ConfigureTransport(tr); err != nil {
+			log.Fatal(err)
+		}
+
+		client = &http.Client{
+			Transport: tr,
+		}
+
 		header = &apnsapi.Header{ApnsTopic: *topic, Authorization: "bearer " + jwtToken}
 	} else {
 		cert, err := loadCertificate()
