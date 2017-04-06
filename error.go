@@ -2,7 +2,7 @@ package apnsapi
 
 const (
 	ErrBadCollapseId               = "BadCollapseId"
-	ErrBadDeviceToken              = "dDeviceToken"
+	ErrBadDeviceToken              = "BadDeviceToken"
 	ErrBadExpirationDate           = "BadExpirationDate"
 	ErrBadMessageId                = "BadMessageId"
 	ErrBadPriority                 = "BadPriority"
